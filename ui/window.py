@@ -1,0 +1,143 @@
+'''
+Author: Tanner Dunworth
+
+This is meant to function as a dynamic UI that interfaces with the data_manager.py utilizing a json cache
+
+'''
+
+
+from file_browser import main as file_dialog
+
+
+
+import sys    
+
+from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QPushButton, QTabBar, QTabWidget, QToolBar, QMenuBar, QTextEdit
+
+from PyQt6.QtWidgets import QVBoxLayout, QBoxLayout, QHBoxLayout
+
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
+
+#from ui import file_browser
+
+class MainWindow( QWidget ):
+
+    def __init__( self, **slots ):
+
+        super(MainWindow, self).__init__()
+        
+        self.slots = InterfaceSlots( )
+
+        self.__build__( )
+        self.__edit__( )
+        self.__layout__( )
+        self.__connect__( )
+        self.__update__( )
+
+    def __build__( self ):
+
+        self.layout_main = QVBoxLayout( )
+
+        self.tab_widget = QTabWidget( )     # tabs
+
+        # debug tab
+        self.tab_debug = QWidget( )              # tab has to be widget
+        self.layout_tab_debug = QVBoxLayout( )   # layout for debug tab
+        self.debug_output_box = QTextEdit( )
+
+        # main tab
+        self.tab_main = QWidget( )
+        self.layout_tab_main = QHBoxLayout( )
+
+        self.menu_bar = QMenuBar( )
+        self.menu_file = self.menu_bar.addMenu( "&File" )
+        self.menu_debug = self.menu_bar.addMenu( "&Debug" )
+        
+        self.button = QPushButton( )
+        
+        self.label_main = QLabel( )
+        self.label_debug = QLabel( )
+
+    def __edit__( self ):
+
+        self.setWindowTitle( 'Maya Standalone Anim Exporter' )
+        self.setGeometry(   100,100,
+                            280,80  )
+
+        self.main_tab = self.tab_widget.addTab(     self.tab_main, 
+                                                    "Main"      )
+
+        self.debug_tab = self.tab_widget.addTab(    self.tab_debug, 
+                                                    "Debug"     )
+
+        self.button.setText( 'Browse' )
+
+        self.label_main.setText( 'main' )
+        self.label_debug.setText( 'debug' )
+
+    def __layout__( self ):
+
+        
+
+        self.layout_tab_main.addWidget( self.button )
+        self.layout_tab_main.addWidget( self.label_main )
+
+        self.layout_tab_debug.addWidget( self.label_debug )
+        
+        self.layout_main.addWidget( self.menu_bar )
+
+        self.layout_main.addWidget( self.tab_widget )
+
+        self.tab_main.setLayout( self.layout_tab_main )
+        self.tab_debug.setLayout( self.layout_tab_debug )
+
+
+        self.setLayout( self.layout_main )
+
+    def __connect__( self ):
+
+        self.button.clicked.connect( self.slots.file_browser )
+
+    def __update__( self ):
+        
+        self.show( )
+
+    def closeEvent( self, event ):
+
+        print('closed')
+
+
+class InterfaceSlots( ):
+
+    def __init__( self ):
+
+        pass
+
+    def file_browser( self, *args): # opens file dialogue returns list of selected files
+
+        file_dialogue = file_dialog( )
+
+        print( file_dialogue )
+
+    #@pyqtSlot( )
+    def method( ):
+
+        pass
+
+def main( ):
+
+    app = QApplication( sys.argv )
+
+    interface_slots = InterfaceSlots( )
+
+    window = MainWindow( slots = interface_slots )
+
+    window.show
+
+    sys.exit( app.exec( ) )
+
+if __name__ == "__main__":
+
+    main( )

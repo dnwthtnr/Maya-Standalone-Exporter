@@ -1,0 +1,65 @@
+{
+
+    "mayapy": {
+
+        "commands": {
+
+            "id":"commands",
+            "startup_code":{
+
+            "1":"import maya.standalone",
+            "2":"maya.standalone.initialize( name = 'python' )",
+            "3":"import maya.cmds as cmds",
+            "4":"import maya.mel as mel"
+
+            },
+            "main_code": { 
+
+                "open_file":"'cmds.file( %s, open = True )'",
+                "get_items":"cmds.ls( objectsOnly = True, assemblies = True, dag = True, exactType = [ 'camera', 'transform', 'joint' ])",
+                "get_hierarchy":"'cmds.listRelatives( %s, allDescendents = True )'",
+                "get_keyframes":"'sorted( cmds.keyframe( %s, q=True ))'",
+                "export_fbx":{
+                    
+                    "export":"'mel.eval(‘FBXExport -f %s -s’)'",
+                    "settings":{
+
+                        "reset_settings":"mel.eval( 'FBXResetExport' )",
+                        "animation_bake":"'mel.eval( 'FBXExportBakeComplexAnimation -value %s )'",
+                        "bake_start":"'mel.eval( 'FBXExportBakeComplexStart -value %s' )'",
+                        "bake_end":"'mel.eval( 'FBXExportBakeComplexEnd -value %s' )'",
+                        "include_animation":"'mel.eval( 'FBXExportAnimationOnly -value %s' )'"
+                    }
+                
+                },
+                "animation_bake":"'cmds.bakeSimulation( %s, animation = 'keysOrObjects', hierarchy = 'below' )'",
+                "get_timeline":{
+                    "get_start":"cmds.playbackOptions( query = True, animationStartTime = True )",
+                    "get_end":"cmds.playbackOptions( query = True, animationEndTime = True )",
+                    "get_min":"cmds.playbackOptions( query = True, minTime = True )",
+                    "get_max":"cmds.playbackOptions( query = True, maxTime = True )"
+                }
+            
+            }
+        
+        }
+    
+    },
+
+    "data": {
+
+        "instances": {
+
+            "mayapy":{
+                
+                "original": "class"
+            }
+        },
+        
+        "from_maya": {
+
+            "animation": "data"
+        }
+    }
+
+}
