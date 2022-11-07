@@ -8,6 +8,8 @@ This is meant to function as a dynamic UI that interfaces with the data_manager.
 
 from file_browser import main as file_dialog
 
+from output_window import OutputWindow
+
 
 
 import sys    
@@ -28,7 +30,7 @@ class MainWindow( QWidget ):
 
         super(MainWindow, self).__init__()
         
-        self.slots = InterfaceSlots( )
+        self.slots = InterfaceSlots()
 
         self.__build__( )
         self.__edit__( )
@@ -45,15 +47,16 @@ class MainWindow( QWidget ):
         # debug tab
         self.tab_debug = QWidget( )              # tab has to be widget
         self.layout_tab_debug = QVBoxLayout( )   # layout for debug tab
-        self.debug_output_box = QTextEdit( )
+        self.debug_output_box = OutputWindow( )
 
         # main tab
         self.tab_main = QWidget( )
         self.layout_tab_main = QHBoxLayout( )
 
         self.menu_bar = QMenuBar( )
-        self.menu_file = self.menu_bar.addMenu( "&File" )
-        self.menu_debug = self.menu_bar.addMenu( "&Debug" )
+
+        self.someaction = QAction( )
+        
         
         self.button = QPushButton( )
         
@@ -68,10 +71,14 @@ class MainWindow( QWidget ):
 
         self.main_tab = self.tab_widget.addTab(     self.tab_main, 
                                                     "Main"      )
-
         self.debug_tab = self.tab_widget.addTab(    self.tab_debug, 
                                                     "Debug"     )
 
+        self.menu_file = self.menu_bar.addMenu( "&File" )
+        self.menu_debug = self.menu_bar.addMenu( "&Debug" )
+        self.someaction.setText( "&someaction" )
+        self.menu_debug.addAction( self.someaction )
+        
         self.button.setText( 'Browse' )
 
         self.label_main.setText( 'main' )
@@ -85,6 +92,7 @@ class MainWindow( QWidget ):
         self.layout_tab_main.addWidget( self.label_main )
 
         self.layout_tab_debug.addWidget( self.label_debug )
+        self.layout_tab_debug.addWidget( self.debug_output_box )
         
         self.layout_main.addWidget( self.menu_bar )
 
@@ -97,6 +105,8 @@ class MainWindow( QWidget ):
         self.setLayout( self.layout_main )
 
     def __connect__( self ):
+
+        self.someaction.triggered.connect( lambda: self.debug_output_box.write( 'someaction' ) )
 
         self.button.clicked.connect( self.slots.file_browser )
 
@@ -120,6 +130,10 @@ class InterfaceSlots( ):
         file_dialogue = file_dialog( )
 
         print( file_dialogue )
+
+    def debug_output( self ):
+
+        pass
 
     #@pyqtSlot( )
     def method( ):

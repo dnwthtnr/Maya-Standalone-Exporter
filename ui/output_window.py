@@ -33,10 +33,10 @@ class OutputWindow( QTextEdit ):
         print(buffer_size)
         
         if buffer_size == 0:
-            message = ( '> {}\n'.format( output ) )
+            message = ( '> {}'.format( output ) )
 
         else:
-            message = ( '\n> {}\n'.format( output ) )
+            message = ( '\n> {}'.format( output ) )
 
         
         self.insertPlainText( message )

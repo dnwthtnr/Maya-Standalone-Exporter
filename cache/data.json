@@ -60,6 +60,36 @@
 
             "animation": "data"
         }
+    },
+
+    "ui": {
+
+        "self.menu_bar": {
+
+            "self.menu_file": "none",
+
+            "self.menu_debug": {
+
+                "addAction": {
+
+                    "self.someaction": {
+
+                        "type": "QAction",
+                        "setText": "someaction",
+                        "connect": {
+
+                            "type": "triggered",
+                            "perameters": {
+
+                                "lambda": "True",
+                                "function": "self.debug_output_box.write",
+                                "arg": "'someaction'"
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
