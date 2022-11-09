@@ -48,6 +48,10 @@
 
     "data": {
 
+        "paths": {
+            "1":null
+        },
+        
         "instances": {
 
             "mayapy":{
@@ -64,26 +68,54 @@
 
     "ui": {
 
-        "self.menu_bar": {
+        "id": "identifier",
+        "parent": {
+            
+            "id": "var",    
+            "self.menu_bar": {
+                
+                "id": "identifier",
+                "parent2": {
 
-            "self.menu_file": "none",
+                    "id": "var",
+                    "self.menu_debug": {
+                        
+                        "id":"identifier",
+                        "parent2_action": { 
 
-            "self.menu_debug": {
+                            "id": "function",
+                            "addAction": {
+                                
+                                "id":"identifier",
+                                "var_result":{
 
-                "addAction": {
+                                    "id":"var",
+                                    "self.someaction": {
+                                        
+                                        "id":"constructor",
+                                        "QAction": {
+                                            
+                                            "id":"identifier",
+                                            "instance_methods":{
 
-                    "self.someaction": {
+                                            "id":"function",
+                                            "setText": "someaction",
+                                            "connect": {
 
-                        "type": "QAction",
-                        "setText": "someaction",
-                        "connect": {
+                                                "id":"connect_identifier",
+                                                "type": "triggered",
+                                                "perameters": {
 
-                            "type": "triggered",
-                            "perameters": {
-
-                                "lambda": "True",
-                                "function": "self.debug_output_box.write",
-                                "arg": "'someaction'"
+                                                    "id": "identifier",
+                                                    "expression": "lambda",
+                                                    "function": "self.debug_output_box.write",
+                                                    "arg": "'someaction'"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -91,5 +123,4 @@
             }
         }
     }
-
 }

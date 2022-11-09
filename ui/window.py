@@ -5,24 +5,29 @@ This is meant to function as a dynamic UI that interfaces with the data_manager.
 
 '''
 
+# ----------| LIB IMPORTS |---------- #
 
-from file_browser import main as file_dialog
-
-from output_window import OutputWindow
-
-
-
-import sys    
+import os
+import sys
 
 from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QPushButton, QTabBar, QTabWidget, QToolBar, QMenuBar, QTextEdit
-
 from PyQt6.QtWidgets import QVBoxLayout, QBoxLayout, QHBoxLayout
-
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 
-#from ui import file_browser
+# ----------| LOCAL IMPORTS |---------- #
+from data_manager import data_manager
+
+from ui.file_browser import main as file_dialog
+
+from ui.output_window import OutputWindow
+
+from config.definitions import DATA_JSON
+
+#DATA_MANAGER = data_manager.DataManager()
+JSON_MANAGER = data_manager.InterfaceJSON( file = DATA_JSON )
+
 
 class MainWindow( QWidget ):
 
@@ -110,6 +115,13 @@ class MainWindow( QWidget ):
 
         self.button.clicked.connect( self.slots.file_browser )
 
+    # TODO: dynamic ui generation from json['ui']
+    def __generate__( self ):
+        # take in json
+        interface_data = JSON_MANAGER.json_reader( file = DATA_JSON )
+        # algorithm to parse and identify variables using 'id'
+        pass
+    
     def __update__( self ):
         
         self.show( )
@@ -128,6 +140,10 @@ class InterfaceSlots( ):
     def file_browser( self, *args): # opens file dialogue returns list of selected files
 
         file_dialogue = file_dialog( )
+
+        JSON_MANAGER.json_write(    dict_location = data.paths , 
+                                    key = int,
+                                    value = file_dialogue )
 
         print( file_dialogue )
 

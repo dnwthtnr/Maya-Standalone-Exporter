@@ -8,37 +8,19 @@ Tool is intended to be independent from maya and unreal
 
 '''
 
-
-# ----------| IMPORTS |---------- #
-
-# pymel needed for mayapy
-
-#from pymel.core.system import openFile
-
-# import config to interface with .env file
-
-
-# import SubprocessMayapy to interface with mayapy
-
-from mayapy_delegate import SubprocessMayapy
-
-
-#from dotenv import load_dotenv
+# ----------| LIB IMPORTS |---------- #
 
 import os
 
 import sys
 
-ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '..' ) )
+import json
 
-sys.path.append( ROOT_DIR )
+# ----------| LOCAL IMPORTS |---------- #
 
-
-# json for data storage and communication with UI
+from data_manager.mayapy_delegate import SubprocessMayapy
 
 from config.definitions import DATA_JSON
-
-import json
 
 
 class DataManager( ):
@@ -75,6 +57,8 @@ class DataManager( ):
 
             call_function( dict_object )
 
+    def 
+
     # TODO: take in file paths
 
     # TODO: query for different animations in scene(s)
@@ -89,9 +73,11 @@ class DataManager( ):
 
 
 
-class InterfaceJSON( ):
+class InterfaceJSON( json ):
 
-    def __init__( self ):
+    def __init__( self, json ):
+
+        self.json = json
 
         pass
 
@@ -100,9 +86,30 @@ class InterfaceJSON( ):
 
         with open( file ) as json_file:
 
-            dict = json.load( json_file )
+            dict = self.load( json_file )
 
         return dict
+
+    def json_write( self, dict_location, key, value ):
+
+        func_args = lambda key, value: ( key, value )
+
+        # if keys and values are same len then iterate together
+
+        #if value>key then put multiple values under key
+
+        #if key>value put same value under keys
+
+        if value is list():
+
+            print('list')
+
+        dict_location[ str( key ) ] = value
+        pass
+
+    # TODO: parse through given dict and return values and eval type ( var(), exec() )
+    def json_unpack( self, dict ):
+        pass
     
     
 
