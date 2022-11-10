@@ -43,7 +43,7 @@ class DataManager( ):
                             range_bounds = [ 1,5 ],
                             call_function = self.mayapy.send_command )
 
-    # mayapy startup
+    # call function with dict strings as input -- used to run set of mayapy commands in order
     def dict_iterate( self, dictionary, range_bounds, call_function ):
 
         range0 = int(range_bounds[ 0 ])
@@ -75,16 +75,23 @@ class DataManager( ):
 
 class InterfaceJSON( json ):
 
-    def __init__( self, json ):
+    def __init__( self, json, overwrite = False ):
 
-        self.json = json
+        self.schema = json
+        
+        if overwrite == False:
+            self.file = 'data_write.json'
+
+        else:
+            self.file = json
+
 
         pass
 
     # TODO: get commands from json
-    def json_reader( self, file ):
+    def json_reader( self ):
 
-        with open( file ) as json_file:
+        with open( self.data ) as json_file:
 
             dict = self.load( json_file )
 
@@ -92,13 +99,15 @@ class InterfaceJSON( json ):
 
     def json_write( self, dict_location, key, value ):
 
-        func_args = lambda key, value: ( key, value )
+        # write self.json to disk
+        with open( file, 'w' ) as json_file:
+            json_file.write( self.json )
 
-        # if keys and values are same len then iterate together
+        
 
-        #if value>key then put multiple values under key
+        
 
-        #if key>value put same value under keys
+    def dict_add( self, dict_location, key, value ):
 
         if value is list():
 
@@ -107,13 +116,46 @@ class InterfaceJSON( json ):
         dict_location[ str( key ) ] = value
         pass
 
+    def dict_pack( self, key, value ):
+
+        dictionary = dict
+
+        if key == int:
+
+            iterations = value
+
+        # if keys and values are same len then iterate together
+        #if value>key then put multiple values under key
+        #if key>value put same value under keys
+        """ else:
+
+            if len( key ) == len( value ):
+                iterator = 
+                iterations = key
+
+            elif len( value ) > len( key ):
+                value_per_key = value // key
+                
+                pass
+
+            else:
+                pass """
+
+        for iter, item in enumerate(iterations):
+
+            dictionary[ str( iter ) ] = item
+
+        return dictionary
+
+
+
     # TODO: parse through given dict and return values and eval type ( var(), exec() )
     def json_unpack( self, dict ):
         pass
     
     
 
-jsonInterface = InterfaceJSON( )
+jsonInterface = InterfaceJSON( json=DATA_JSON )
 
 json = jsonInterface.json_reader( file = DATA_JSON )
 
