@@ -141,9 +141,9 @@ class InterfaceSlots( ):
 
         file_dialogue = file_dialog( )
 
-        JSON_MANAGER.json_write(    dict_location = JSON_MANAGER.json['data']['paths'], 
-                                    key = int,
-                                    value = file_dialogue )
+        JSON_MANAGER.dict_add(  dict_location = JSON_MANAGER.json['data']['paths'], 
+                                key = int,
+                                value = file_dialogue )
 
         print( file_dialogue )
 
