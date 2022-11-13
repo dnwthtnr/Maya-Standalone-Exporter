@@ -60,9 +60,11 @@ class MainWindow( QWidget ):
         self.menu_bar = QMenuBar( )
 
         self.print_files = QAction( )
+        self.print_instances = QAction( )
+        self.test_instances = QAction( )
         
-        
-        self.button = QPushButton( )
+        self.button_browse = QPushButton( )
+        self.button_load_files = QPushButton( )
         
         self.label_main = QLabel( )
         self.label_debug = QLabel( )
@@ -81,11 +83,19 @@ class MainWindow( QWidget ):
         self.menu_file = self.menu_bar.addMenu( "&File" )
         self.menu_debug = self.menu_bar.addMenu( "&Debug" )
         
-        
+        ##############################################
         self.print_files.setText( "&print_files" )
         self.menu_debug.addAction( self.print_files )
+
+        self.print_instances.setText( "&print_instances" )
+        self.menu_debug.addAction( self.print_instances )
+
+        self.test_instances.setText( "&test_instances" )
+        self.menu_debug.addAction( self.test_instances )
+        ##################################################
         
-        self.button.setText( 'Browse' )
+        self.button_browse.setText( 'Browse' )
+        self.button_load_files.setText( 'Load Files' )
 
         self.label_main.setText( 'main' )
         self.label_debug.setText( 'debug' )
@@ -93,7 +103,8 @@ class MainWindow( QWidget ):
     def __layout__( self ):
 
         # add main tab widgets
-        self.layout_tab_main.addWidget( self.button )
+        self.layout_tab_main.addWidget( self.button_browse )
+        self.layout_tab_main.addWidget( self.button_load_files )
         self.layout_tab_main.addWidget( self.label_main )
 
         # add debug tab widgets
@@ -121,7 +132,17 @@ class MainWindow( QWidget ):
                             slots.debug_output(
                                     print = "paths") ) )
 
-        self.button.clicked.connect( slots.file_browser )
+        self.print_instances.triggered.connect( 
+                                    lambda: self.debug_output_box.write( 
+                                            slots.debug_output(
+                                                    print = "instances") ) )
+
+        self.test_instances.triggered.connect( 
+                                    lambda: self.debug_output_box.write( 
+                                            slots.debug_test_instances() ) )
+
+        self.button_browse.clicked.connect( slots.file_browser )
+        self.button_load_files.clicked.connect( slots.load_files )
 
     # TODO: dynamic ui generation from json['ui']
     def __generate__( self ):
@@ -156,7 +177,7 @@ class InterfaceSlots( ):
 
         if not isinstance( file_dialogue, type( None ) ):
             JSON_MANAGER.dict_add(  
-                dict_location = JSON_MANAGER.cache['data']['paths'], 
+                dict_location = JSON_MANAGER.data['paths'], 
                 key = int,
                 value = file_dialogue,
                 iterate = True  )
@@ -164,8 +185,14 @@ class InterfaceSlots( ):
         else:
             print( "No files selected" )
 
+    def load_files( self ):
+        JSON_MANAGER.start_file_instances()
+
     def debug_output( self, print ):
-        return JSON_MANAGER.cache['data'][print]
+        return JSON_MANAGER.data[print]
+
+    def debug_test_instances( self ):
+        return JSON_MANAGER.identify_instances()
 
     #@pyqtSlot( )
     def method( ):

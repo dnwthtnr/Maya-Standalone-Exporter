@@ -45,11 +45,19 @@ class DataManager( InterfaceJSON ):
     # start mayapy - store instance
     def start_instance( self, instance_id = 0, path = None ):
 
-        self.mayapy = SubprocessMayapy( )
+        mayapy = SubprocessMayapy(  id = instance_id, 
+                                    path = path )
 
+        key = 'mayapy_instance{}'.format( instance_id )
+        # add instance to cache
+        self.dict_add(  dict_location = self.data['instances']['mayapy'], 
+                        key = key, 
+                        value = str( mayapy ) )
+
+        # run startup codes
         self.dict_iterate(  dictionary = self.commands["startup_code"], 
                             range_bounds = [ 1,5 ],
-                            call_function = self.mayapy.send_command )
+                            call_function = mayapy.send_command )
 
     # call function with dict strings as input -- used to run set of mayapy commands in order
     def dict_iterate( self, dictionary, range_bounds, call_function ):
@@ -64,6 +72,33 @@ class DataManager( InterfaceJSON ):
             dict_object = dictionary[ str( i ) ]
 
             call_function( dict_object )
+
+    def identify_instances( self ):
+
+        dict = self.data['instances']
+        id_list = []
+
+        for key in dict:
+
+            class_object = dict[ key ]
+
+            id = exec( '{}.print_id()'.format(class_object) )
+
+            id_list.append( '{}:{}'.format(class_object, id) )
+
+        return id_list
+
+
+    def start_file_instances( self ):
+
+        files = self.cache['data']['paths']
+        
+        for i, file in enumerate(files):
+
+            self.start_instance(    instance_id = i,
+                                    path = file )
+
+        pass
 
 
     # TODO: take in file paths

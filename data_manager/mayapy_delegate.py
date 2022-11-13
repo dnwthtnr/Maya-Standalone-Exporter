@@ -73,6 +73,11 @@ class SubprocessMayapy( ):
 
         self.instance.wait( )
 
+    def print_id( self, *args):
+        #print( 'instance_id:{}'.format( self.id ) )
+
+        return self.id
+
 
 
 if __name__ == "__main__":
