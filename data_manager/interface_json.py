@@ -2,12 +2,12 @@ import json
 
 
 
-class InterfaceJSON( json ):
+class InterfaceJSON( ):
 
     def __init__(   self, json, overwrite = False, 
                     object_instance = True, rootdir = 'Desktop' ):
 
-        super( InterfaceJSON, self ).__init__
+        #super( InterfaceJSON, self ).__init__( )
         
         self.schema = json                  # original json
         
@@ -22,19 +22,20 @@ class InterfaceJSON( json ):
             self.file = self.schema
 
 
-        pass
-
     # read and return given json
-    def json_reader( self, directory ):
+    def json_reader( self, directory = None ):
 
         if self.instance == True:
             directory = self.schema
         
+
         with open( directory ) as json_file:
-            dict = self.load( json_file )
+            dict = json.load( json_file )
+
 
         if self.instance == True:
             self.cache = dict
+            print( 'json successfully opened as cache' )
 
         return dict
 
@@ -56,7 +57,6 @@ class InterfaceJSON( json ):
     def dict_add( self, dict_location, key, value, iterate = False ):
 
         if value is list():
-
             print('list')
 
         if iterate == True:
@@ -73,7 +73,7 @@ class InterfaceJSON( json ):
     # iteratively add values to keys -- creating new dictionary
     def dict_pack( self, key, value ):
 
-        dictionary = dict
+        dictionary = dict()
 
         if key == int:          # int if you want them numbered instead of string keys
 
@@ -83,9 +83,9 @@ class InterfaceJSON( json ):
         #if value>key then put multiple values under key
         #if key>value put same value under keys
 
-        for iter, item in enumerate(iterations):
+        for i, item in enumerate(iterations):
 
-            dictionary[ str( iter ) ] = item
+            dictionary[ str( i ) ] = str(item)
 
         return dictionary
 

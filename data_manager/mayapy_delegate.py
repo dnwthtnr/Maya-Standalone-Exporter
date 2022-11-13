@@ -37,29 +37,22 @@ import os
 
 
 
-# json for data storage and communication with UI
-
-import json
-
-
-
 class SubprocessMayapy( ):
 
-    def __init__( self, path = '"C:\\Program Files\\Autodesk\Maya2022\\bin\mayapy.exe"' ):
+    def __init__( self, id = 0, path = '"C:\\Program Files\\Autodesk\Maya2022\\bin\mayapy.exe"' ):
 
+        self.id = id
+        
         # create instance of mayapy in new process when class instantiated
         self.instance = spawn( 'cmd.exe' )
-
         self.instance.expect( '>' )
-
         self.instance.sendline( path )
-
         self.instance.expect
     
     # TODO: create function to execute command on self.mayapy
     def send_command( self, command = [] ):
 
-        print( command )
+        print(  'instance-{}:{}'.format(self.id, command) )
         
         self.instance.sendline( command )
 
@@ -81,22 +74,14 @@ class SubprocessMayapy( ):
         self.instance.wait( )
 
 
-func = SubprocessMayapy( )
 
+if __name__ == "__main__":
 
-
-mayapy_path = '"C:\\Program Files\\Autodesk\Maya2022\\bin\mayapy.exe"'
-
-instance = spawn( 'cmd.exe' )
-
-instance.expect( '>' )
-
-first = instance.before
-
-instance.sendline( mayapy_path )
-
-instance.expect( '>' )
-
-second = instance.before
-
-print( first, second )
+    mayapy_path = '"C:\\Program Files\\Autodesk\Maya2022\\bin\mayapy.exe"'
+    instance = spawn( 'cmd.exe' )
+    instance.expect( '>' )
+    first = instance.before
+    instance.sendline( mayapy_path )
+    instance.expect( '>' )
+    second = instance.before
+    print( first, second )

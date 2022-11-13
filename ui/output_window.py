@@ -43,7 +43,7 @@ class OutputWindow( QTextEdit ):
 
         
 
-        self.buffer.write( output )
+        self.buffer.write( str(output) )
         
         pass
 

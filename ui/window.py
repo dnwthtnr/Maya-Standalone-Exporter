@@ -23,10 +23,11 @@ from ui.file_browser import main as file_dialog
 
 from ui.output_window import OutputWindow
 
-from config.definitions import DATA_JSON
+from config.definitions import DATA_JSON, ROOT_DIR
 
 #DATA_MANAGER = data_manager.DataManager()
-JSON_MANAGER = data_manager.InterfaceJSON( file = DATA_JSON )
+JSON_MANAGER = data_manager.DataManager(    json=DATA_JSON, overwrite=False, 
+                                            object_instance=True, rootdir=ROOT_DIR )
 
 
 class MainWindow( QWidget ):
@@ -34,8 +35,6 @@ class MainWindow( QWidget ):
     def __init__( self, **slots ):
 
         super(MainWindow, self).__init__()
-        
-        self.slots = InterfaceSlots()
 
         self.__build__( )
         self.__edit__( )
@@ -60,7 +59,7 @@ class MainWindow( QWidget ):
 
         self.menu_bar = QMenuBar( )
 
-        self.someaction = QAction( )
+        self.print_files = QAction( )
         
         
         self.button = QPushButton( )
@@ -81,8 +80,10 @@ class MainWindow( QWidget ):
 
         self.menu_file = self.menu_bar.addMenu( "&File" )
         self.menu_debug = self.menu_bar.addMenu( "&Debug" )
-        self.someaction.setText( "&someaction" )
-        self.menu_debug.addAction( self.someaction )
+        
+        
+        self.print_files.setText( "&print_files" )
+        self.menu_debug.addAction( self.print_files )
         
         self.button.setText( 'Browse' )
 
@@ -91,34 +92,41 @@ class MainWindow( QWidget ):
 
     def __layout__( self ):
 
-        
-
+        # add main tab widgets
         self.layout_tab_main.addWidget( self.button )
         self.layout_tab_main.addWidget( self.label_main )
 
+        # add debug tab widgets
         self.layout_tab_debug.addWidget( self.label_debug )
         self.layout_tab_debug.addWidget( self.debug_output_box )
         
+        # add widgets to main window layout
         self.layout_main.addWidget( self.menu_bar )
 
         self.layout_main.addWidget( self.tab_widget )
 
+        # set layout for each tab
         self.tab_main.setLayout( self.layout_tab_main )
         self.tab_debug.setLayout( self.layout_tab_debug )
 
-
+        # set layout for main window
         self.setLayout( self.layout_main )
 
     def __connect__( self ):
 
-        self.someaction.triggered.connect( lambda: self.debug_output_box.write( 'someaction' ) )
+        slots = InterfaceSlots()
 
-        self.button.clicked.connect( self.slots.file_browser )
+        self.print_files.triggered.connect( 
+                    lambda: self.debug_output_box.write( 
+                            slots.debug_output(
+                                    print = "paths") ) )
+
+        self.button.clicked.connect( slots.file_browser )
 
     # TODO: dynamic ui generation from json['ui']
     def __generate__( self ):
         # take in json
-        interface_data = JSON_MANAGER.json_reader( file = DATA_JSON )
+        #interface_data = JSON_MANAGER.json_reader( file = DATA_JSON )
         # algorithm to parse and identify variables using 'id'
         pass
     
@@ -137,19 +145,27 @@ class InterfaceSlots( ):
 
         pass
 
-    def file_browser( self, *args): # opens file dialogue returns list of selected files
+    def file_browser( self, verbosity, *args): # opens file dialogue returns list of selected files
 
         file_dialogue = file_dialog( )
 
-        JSON_MANAGER.dict_add(  dict_location = JSON_MANAGER.json['data']['paths'], 
-                                key = int,
-                                value = file_dialogue )
+        if verbosity > 0:
+            print( 'file_dialogue:{}'.format(file_dialogue) )
+            print( 'file_dialogue type:{}'.format(type(file_dialogue)) )
+        
 
-        print( file_dialogue )
+        if not isinstance( file_dialogue, type( None ) ):
+            JSON_MANAGER.dict_add(  
+                dict_location = JSON_MANAGER.cache['data']['paths'], 
+                key = int,
+                value = file_dialogue,
+                iterate = True  )
 
-    def debug_output( self ):
+        else:
+            print( "No files selected" )
 
-        pass
+    def debug_output( self, print ):
+        return JSON_MANAGER.cache['data'][print]
 
     #@pyqtSlot( )
     def method( ):
