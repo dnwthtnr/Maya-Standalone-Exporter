@@ -39,18 +39,26 @@ import os
 
 class SubprocessMayapy( ):
 
-    def __init__( self, id = 0, path = '"C:\\Program Files\\Autodesk\Maya2022\\bin\mayapy.exe"' ):
+    def __init__( self, id = 0, path = "C:\\Program Files\\Autodesk\Maya2022\\bin\mayapy.exe" ):
 
         self.id = id
         
         # create instance of mayapy in new process when class instantiated
         self.instance = spawn( 'cmd.exe' )
         self.instance.expect( '>' )
-        self.instance.sendline( path )
-        self.instance.expect
+
+        self.send_command( command = path ) 
+        #self.instance.sendline( path )
+        #self.instance.expect
+    
+    def send_command_batch( self, commands = [] ):
+        pass
+
+    def command_configure( self ):
+        pass
     
     # TODO: create function to execute command on self.mayapy
-    def send_command( self, command = [] ):
+    def send_command( self, command = [], return_output = False ):
 
         print(  'instance-{}:{}'.format(self.id, command) )
         
@@ -60,7 +68,10 @@ class SubprocessMayapy( ):
 
         output = self.instance.before
 
-        return output
+        if return_output == True:
+            return output
+        else:
+            return type(None)
     
     # TODO: create command to terminate program
     def kill( self ):

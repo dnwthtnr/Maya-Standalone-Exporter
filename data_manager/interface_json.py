@@ -54,21 +54,23 @@ class InterfaceJSON( ):
         
 
     # add data to floating dict
-    def dict_add( self, dict_location, key, value, iterate = False ):
+    def dict_add( self, dict_location, key, value, iterate = False, array = False ):
 
-        if value is list():
-            print('list')
-
-        if iterate == True:
-            new_dict = self.dict_pack(  key = key, 
-                                        value = value )
+        if array == True:
+            new_dict = dict_location
+            new_dict.append( value )
+            print( 'Appended <{}> to <{}>'.format( value, new_dict ) )
 
         else:
-            new_dict = { str(key) : value }
-        
-        dict_location.update( new_dict )
+            if value is list():
+                print('list')
+            if iterate == True:
+                new_dict = self.dict_pack(  key = key, 
+                                            value = value )
+            else:
+                new_dict = { str(key) : value }
 
-        pass
+            dict_location.update( new_dict )
 
     # iteratively add values to keys -- creating new dictionary
     def dict_pack( self, key, value ):

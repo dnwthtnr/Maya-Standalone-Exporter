@@ -15,29 +15,64 @@
             },
             "main_code": { 
 
-                "open_file":"'cmds.file( %s, open = True )'",
-                "get_items":"cmds.ls( objectsOnly = True, assemblies = True, dag = True, exactType = [ 'camera', 'transform', 'joint' ])",
-                "get_hierarchy":"'cmds.listRelatives( %s, allDescendents = True )'",
-                "get_keyframes":"'sorted( cmds.keyframe( %s, q=True ))'",
+                
+                "get_items":{
+                    "return":true,
+                    "command":"cmds.ls( objectsOnly = True, assemblies = True, dag = True, exactType = [ 'camera', 'transform', 'joint' ])"
+                },
+                "open_file":{
+                    "format": "file",
+                    "return": false,
+                    "command": "cmds.file( {}, open = True )"
+                },
+                "get_hierarchy":{
+                    "format": "object",
+                    "return": true,
+                    "command": "cmds.listRelatives( {}, allDescendents = True )"
+                },
+                "get_keyframes":{
+                    "format": "object",
+                    "return": true,
+                    "command": "sorted( cmds.keyframe( {}, q=True ))"
+                },
+                "animation_bake":{
+                    "format": "object",
+                    "return" : false,
+                    "command": "cmds.bakeSimulation( {}, animation = 'keysOrObjects', hierarchy = 'below' )"
+                },
                 "export_fbx":{
                     
-                    "export":"'mel.eval(‘FBXExport -f %s -s’)'",
+                    "export":{
+                        "format":"objects",
+                        "command":"mel.eval(‘FBXExport -f {} -s’)"
+                    },
                     "settings":{
 
                         "reset_settings":"mel.eval( 'FBXResetExport' )",
-                        "animation_bake":"'mel.eval( 'FBXExportBakeComplexAnimation -value %s )'",
-                        "bake_start":"'mel.eval( 'FBXExportBakeComplexStart -value %s' )'",
-                        "bake_end":"'mel.eval( 'FBXExportBakeComplexEnd -value %s' )'",
-                        "include_animation":"'mel.eval( 'FBXExportAnimationOnly -value %s' )'"
+                        "animation_bake":"mel.eval( 'FBXExportBakeComplexAnimation -value {} )",
+                        "bake_start":"mel.eval( 'FBXExportBakeComplexStart -value {}' )",
+                        "bake_end":"mel.eval( 'FBXExportBakeComplexEnd -value {}' )",
+                        "include_animation":"mel.eval( 'FBXExportAnimationOnly -value {}' )"
                     }
                 
                 },
-                "animation_bake":"'cmds.bakeSimulation( %s, animation = 'keysOrObjects', hierarchy = 'below' )'",
                 "get_timeline":{
-                    "get_start":"cmds.playbackOptions( query = True, animationStartTime = True )",
-                    "get_end":"cmds.playbackOptions( query = True, animationEndTime = True )",
-                    "get_min":"cmds.playbackOptions( query = True, minTime = True )",
-                    "get_max":"cmds.playbackOptions( query = True, maxTime = True )"
+                    "get_start":{
+                        "return":true,
+                        "command":"cmds.playbackOptions( query = True, animationStartTime = True )"
+                    },
+                    "get_end":{
+                        "return":true,
+                        "command":"cmds.playbackOptions( query = True, animationEndTime = True )"
+                    },
+                    "get_min":{
+                        "return":true,
+                        "command":"cmds.playbackOptions( query = True, minTime = True )"
+                    },
+                    "get_max":{
+                        "return":true,
+                        "command":"cmds.playbackOptions( query = True, maxTime = True )"
+                    }
                 }
             
             }
@@ -54,13 +89,26 @@
         
         "instances": {
 
-            "mayapy":{
-            }
+            "mayapy":[
+                
+            ]
         },
         
         "from_maya": {
 
-            "animation": "data"
+            "instance": {
+                "example-instance": {
+                    "address":"classaddress",
+                    "return_data":{
+                        
+                        "get_items": [
+                            
+                            "item1", 
+                            "item2"
+                        ]
+                    }
+                }
+            }
         }
     },
 

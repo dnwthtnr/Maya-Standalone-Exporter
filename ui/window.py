@@ -62,6 +62,7 @@ class MainWindow( QWidget ):
         self.print_files = QAction( )
         self.print_instances = QAction( )
         self.test_instances = QAction( )
+        self.print_file_data = QAction( )
         
         self.button_browse = QPushButton( )
         self.button_load_files = QPushButton( )
@@ -92,6 +93,9 @@ class MainWindow( QWidget ):
 
         self.test_instances.setText( "&test_instances" )
         self.menu_debug.addAction( self.test_instances )
+
+        self.print_file_data.setText( "&print_file_data" )
+        self.menu_debug.addAction( self.print_file_data )
         ##################################################
         
         self.button_browse.setText( 'Browse' )
@@ -136,6 +140,11 @@ class MainWindow( QWidget ):
                                     lambda: self.debug_output_box.write( 
                                             slots.debug_output(
                                                     print = "instances") ) )
+
+        self.print_file_data.triggered.connect( 
+                                    lambda: self.debug_output_box.write( 
+                                            slots.debug_output(
+                                                    print = "from_maya") ) )
 
         self.test_instances.triggered.connect( 
                                     lambda: self.debug_output_box.write( 
@@ -187,6 +196,8 @@ class InterfaceSlots( ):
 
     def load_files( self ):
         JSON_MANAGER.start_file_instances()
+        JSON_MANAGER.instance_send_commands( command = "open_file" )
+        JSON_MANAGER.instance_send_commands( command = "get_items" )
 
     def debug_output( self, print ):
         return JSON_MANAGER.data[print]
