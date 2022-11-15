@@ -31,23 +31,26 @@ Tool is intended to be independent from maya and unreal
 from asyncio import subprocess
 from dotenv import load_dotenv
 
+import subprocess
+
 
 import os
 
 
 
 
-class SubprocessMayapy( ):
+# wexpect
+""" class SubprocessMayapy( ):
 
-    def __init__( self, id = 0, path = "C:\\Program Files\\Autodesk\Maya2022\\bin\mayapy.exe" ):
+    def __init__( self, verbosity = 0, id = 0, path = "'C:\\Program Files\\Autodesk\\Maya2022\\bin\\mayapy.exe'" ):
 
+        self.verbosity = verbosity
+        
         self.id = id
         
-        # create instance of mayapy in new process when class instantiated
-        self.instance = spawn( 'cmd.exe' )
-        self.instance.expect( '>' )
+        self.shell_startup( path )
 
-        self.send_command( command = path ) 
+        #print( 'maya start: {}'.format( mayapy_start ) )
         #self.instance.sendline( path )
         #self.instance.expect
     
@@ -58,16 +61,22 @@ class SubprocessMayapy( ):
         pass
     
     # TODO: create function to execute command on self.mayapy
-    def send_command( self, command = [], return_output = False ):
+    def send_command( self, command = [], return_output = False, expect = '>>>' ):
 
-        print(  'instance-{}:{}'.format(self.id, command) )
+        #print(  'instance-{}:{}'.format(self.id, command) )
+
+        output = None
         
         self.instance.sendline( command )
 
-        self.instance.expect( '>' )
+        self.instance.expect( expect )
 
         output = self.instance.before
 
+        if self.verbosity > 0:
+
+            print( '>instance-{}\n  command:{}\n    output:{}\n\n'.format( self.id, command, output ) )
+        
         if return_output == True:
             return output
         else:
@@ -84,20 +93,91 @@ class SubprocessMayapy( ):
 
         self.instance.wait( )
 
+    def shell_startup( self, path = None ):
+        
+        # start shell
+        self.instance = spawn( 'cmd.exe' )
+        self.instance.expect( '>' )
+        
+        # start python env
+        output = self.send_command( command = 'python', return_output=True, expect = '>' )
+
+        # open application instance
+        if path != None:
+            
+            path_output = self.send_command( command = path, return_output=True )
+
+        if self.verbosity > 0:
+            print( 'python_output: {}\npath_output: {}'.format( output,path_output ) ) 
+
     def print_id( self, *args):
         #print( 'instance_id:{}'.format( self.id ) )
 
+        return self.id """
+
+# trying popen
+class SubprocessMayapy( ):
+
+    def __init__( self, verbosity = 1, id = 0, path = "'C:\\Program Files\\Autodesk\\Maya2022\\bin\\mayapy.exe'" ):
+
+        self.verbosity = verbosity
+        
+        self.id = id
+
+        self.shell_startup(path)
+
+    # TODO: create function to execute command on self.mayapy
+    def send_command( self, command = [], return_output = False, expect = '>>>' ):
+        
+        # send command to proccess
+        self.process.stdin.write( command )
+        self.process.flush()
+
+        output = self.process.stdout.readlines()
+        error = self.process.stderr.readlines()
+
+        print( 'output'output, error )
+
+    
+    # TODO: create command to terminate program
+    def kill( self ):
+        pass
+
+        
+    def shell_startup( self, path = None ):
+        
+        # start path as process
+        self.process = subprocess.Popen(    path, 
+                                            stdin=subprocess.PIPE,
+                                            stdout=subprocess.PIPE,
+                                            stderr=subprocess.PIPE  )
+
+
+
+    def print_id( self, *args):
+
         return self.id
-
-
 
 if __name__ == "__main__":
 
-    mayapy_path = '"C:\\Program Files\\Autodesk\Maya2022\\bin\mayapy.exe"'
-    instance = spawn( 'cmd.exe' )
-    instance.expect( '>' )
-    first = instance.before
-    instance.sendline( mayapy_path )
-    instance.expect( '>' )
-    second = instance.before
-    print( first, second )
+    print(1)
+    instance = SubprocessMayapy( verbosity=1, id=0 )
+
+    a = instance.send_command( command = "'import maya.standalone'", return_output=True)
+    b = instance.send_command( command = "'maya.standalone.initialize( name = python )'", return_output=True)
+    c = instance.send_command( command = "'import maya.cmds as cmds'", return_output=True)
+    d = instance.send_command( command = "'import maya.mel as mel'", return_output=True )
+    
+    #print( 'a:{}\nb:{}\nc:{}\nd:{}\n'.format( a,b,c,d ) )
+    
+    first = instance.send_command( 
+        command = "'cmds.file( {}, open = True )'".format( "Q:/__packages/_GitHub/Maya-Standalone-Exporter/test/test_anims_v01.mb"),
+        return_output=True )
+    second = instance.send_command( 
+        command = f"'obj = cmds.ls( objectsOnly = True, assemblies = True, dag = True, exactType = [ {'camera'}, {'transform'}, {'joint'} ])'",
+        return_output=True )
+    third = instance.send_command( 
+        command = "'print(obj)'",
+        return_output=True )
+    print(2)
+    #print( first, second )

@@ -17,8 +17,9 @@
 
                 
                 "get_items":{
+                    "format":"f",
                     "return":true,
-                    "command":"cmds.ls( objectsOnly = True, assemblies = True, dag = True, exactType = [ 'camera', 'transform', 'joint' ])"
+                    "command":"'cmds.ls( objectsOnly = True, assemblies = True, dag = True, exactType = [ 'camera', 'transform', 'joint' ])'"
                 },
                 "open_file":{
                     "format": "file",
