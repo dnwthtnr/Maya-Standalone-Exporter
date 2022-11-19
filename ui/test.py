@@ -1,4 +1,4 @@
-import sys
+""" import sys
 import os
 import subprocess
 
@@ -43,4 +43,76 @@ def test():
 command = 'mayapy {}'.format( test )
 proc = subprocess.Popen( command, shell=True, stdout=subprocess.PIPE )
 proc.wait()
-print( 'output:{}'.format(proc.returncode) )
+print( 'output:{}'.format(proc.returncode) ) """
+
+""" string1 = '"white spaces"'
+string = string1.replace( ' ', "' '" )
+
+print( string1, string ) """
+
+import subprocess
+import os
+import io
+import time, os, sys
+o, p = 10, 15
+
+buffer = io.StringIO()
+buffer.seek( 0, os.SEEK_END )
+buffer_size = buffer.tell()
+print( f"Buffer Size {buffer_size}" )
+#import ctypes
+#buffer = ctypes.create_string_buffer(1024)
+
+#print( ctypes.addressof( buffer ) )
+
+@subprocess.PIPE
+class DataClass( ):
+    def __init__(self) -> None:
+        print(  )
+        
+
+classs = DataClass( 'cmd.exe' )
+
+
+cmd = [ 'cmd.exe' ]
+
+calc = subprocess.Popen(    cmd, 
+                            stdin=subprocess.PIPE,
+                            stdout=sys.stdout,
+                            stderr=sys.stdout,
+                            encoding='UTF-8',
+                            universal_newlines=True)
+
+
+
+#print( sys.stdout )
+
+""" for line in iter( calc.stdout.readline, '' ):
+    buffer.write( str(line) )
+    if line in ['\n', '\r\n']:
+        print( f'hit new line:{line}' )
+        break """
+    #print( ">>>{}".format( line.rstrip() ) )
+    #print('hang')
+
+
+#print( "Spawn Output {}: {}".format( 1, sys.stdout ) )
+#calc.stdin.flush()
+
+#print(buffer.getvalue())
+print('hang')
+
+calc.stdin.flush()
+sys.stdout.flush
+sys.stdin.write( 'python\n' )
+
+#print( calc.stdout.read )
+print(sys.stdout)
+#calc.stdin.write( '{} + {}\n'.format( 10,15 ) )
+
+
+#print(buffer.getvalue())
+
+
+
+#print( "Spawn Output {}: {}".format( 2, sys.stdout ) )

@@ -5,7 +5,8 @@ from threading import Thread
 
 # import from subproccess to interface with mayapy
 
-from wexpect import spawn
+#from wexpect import spawn
+import wexpect
 
 '''
 
@@ -32,6 +33,7 @@ from asyncio import subprocess
 from dotenv import load_dotenv
 
 import subprocess
+import multiprocessing
 
 
 import os
@@ -40,9 +42,9 @@ import os
 
 
 # wexpect
-""" class SubprocessMayapy( ):
+class SubprocessMayapy( ):
 
-    def __init__( self, verbosity = 0, id = 0, path = "'C:\\Program Files\\Autodesk\\Maya2022\\bin\\mayapy.exe'" ):
+    def __init__( self, verbosity = 0, id = 0, path = "C:\\Program' 'Files\\Autodesk\\Maya2022\\bin\\mayapy.exe" ):
 
         self.verbosity = verbosity
         
@@ -67,11 +69,11 @@ import os
 
         output = None
         
-        self.instance.sendline( command )
+        self.instance.write( command )
 
-        self.instance.expect( expect )
+        self.instance.write( expect )
 
-        output = self.instance.before
+        output = self.instance.getConsoleOut()
 
         if self.verbosity > 0:
 
@@ -96,71 +98,28 @@ import os
     def shell_startup( self, path = None ):
         
         # start shell
-        self.instance = spawn( 'cmd.exe' )
-        self.instance.expect( '>' )
+        self.instance = wexpect.console_reader.ConsoleReaderSocket( path, host_pid = os.getppid() )
+        print('appended')
+        #self.instance.expect( '>>>' )
         
         # start python env
-        output = self.send_command( command = 'python', return_output=True, expect = '>' )
+        #output = self.send_command( command = 'python', return_output=True, expect = '>' )
 
         # open application instance
-        if path != None:
+        #if path != None:
             
-            path_output = self.send_command( command = path, return_output=True )
+        #    path_output = self.send_command( command = path, return_output=True )
 
-        if self.verbosity > 0:
-            print( 'python_output: {}\npath_output: {}'.format( output,path_output ) ) 
+        #if self.verbosity > 0:
+         #   print( 'python_output: {}\npath_output: {}'.format( output,path_output ) ) 
 
     def print_id( self, *args):
         #print( 'instance_id:{}'.format( self.id ) )
 
-        return self.id """
-
-# trying popen
-class SubprocessMayapy( ):
-
-    def __init__( self, verbosity = 1, id = 0, path = "'C:\\Program Files\\Autodesk\\Maya2022\\bin\\mayapy.exe'" ):
-
-        self.verbosity = verbosity
-        
-        self.id = id
-
-        self.shell_startup(path)
-
-    # TODO: create function to execute command on self.mayapy
-    def send_command( self, command = [], return_output = False, expect = '>>>' ):
-        
-        # send command to proccess
-        self.process.stdin.write( command )
-        self.process.flush()
-
-        output = self.process.stdout.readlines()
-        error = self.process.stderr.readlines()
-
-        print( 'output'output, error )
-
-    
-    # TODO: create command to terminate program
-    def kill( self ):
-        pass
-
-        
-    def shell_startup( self, path = None ):
-        
-        # start path as process
-        self.process = subprocess.Popen(    path, 
-                                            stdin=subprocess.PIPE,
-                                            stdout=subprocess.PIPE,
-                                            stderr=subprocess.PIPE  )
-
-
-
-    def print_id( self, *args):
-
         return self.id
 
-if __name__ == "__main__":
 
-    print(1)
+def main():
     instance = SubprocessMayapy( verbosity=1, id=0 )
 
     a = instance.send_command( command = "'import maya.standalone'", return_output=True)
@@ -180,4 +139,15 @@ if __name__ == "__main__":
         command = "'print(obj)'",
         return_output=True )
     print(2)
-    #print( first, second )
+
+
+if __name__ == "__main__":
+
+    
+
+
+    process = multiprocessing.Process( target=main() )
+    process.start()
+
+    print(1)
+    
