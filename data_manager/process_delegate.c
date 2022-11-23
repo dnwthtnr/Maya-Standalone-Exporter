@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
-#include <sys/wait.h>
 
 int main(int argc, char* argv[])
 {
@@ -36,7 +35,6 @@ int main(int argc, char* argv[])
         printf( "result: %d\n", y );
         close(p1[1]);
         close(p2[0]);
-        wait(NULL);
     }
     
     return 0;

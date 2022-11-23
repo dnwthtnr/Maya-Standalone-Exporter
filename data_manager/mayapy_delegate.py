@@ -6,7 +6,7 @@ from threading import Thread
 # import from subproccess to interface with mayapy
 
 #from wexpect import spawn
-import wexpect
+import ctypes
 
 '''
 
@@ -30,7 +30,8 @@ Tool is intended to be independent from maya and unreal
 #from decouple import config
 
 from asyncio import subprocess
-from dotenv import load_dotenv
+import wexpect
+#from dotenv import load_dotenv
 
 import subprocess
 import multiprocessing
@@ -40,6 +41,83 @@ import os
 
 
 
+
+# wexpect
+class sSubprocessMayapy( ):
+
+    def __init__( self, verbosity = 0, id = 0, path = "C:\\Program' 'Files\\Autodesk\\Maya2022\\bin\\mayapy.exe" ):
+
+        self.verbosity = verbosity
+        
+        self.id = id
+        
+        self.shell_startup( path )
+
+        #print( 'maya start: {}'.format( mayapy_start ) )
+        #self.instance.sendline( path )
+        #self.instance.expect
+    
+    def send_command_batch( self, commands = [] ):
+        pass
+
+    def command_configure( self ):
+        pass
+    
+    # TODO: create function to execute command on self.mayapy
+    def send_command( self, command = [], return_output = False, expect = '>>>' ):
+
+        #print(  'instance-{}:{}'.format(self.id, command) )
+
+        output = None
+        
+        self.instance.write( command )
+
+        self.instance.write( expect )
+
+        output = self.instance.getConsoleOut()
+
+        if self.verbosity > 0:
+
+            print( '>instance-{}\n  command:{}\n    output:{}\n\n'.format( self.id, command, output ) )
+        
+        if return_output == True:
+            return output
+        else:
+            return type(None)
+    
+    # TODO: create command to terminate program
+    def kill( self ):
+
+        # exit mayapy
+        self.instance.sendline( 'exit( )' )
+
+        # exit cmd
+        self.instance.sendline( 'exit' )
+
+        self.instance.wait( )
+
+    def shell_startup( self, path = None ):
+        
+        # start shell
+        self.instance = wexpect.console_reader.ConsoleReaderSocket( path, host_pid = os.getppid() )
+        print('appended')
+        #self.instance.expect( '>>>' )
+        
+        # start python env
+        #output = self.send_command( command = 'python', return_output=True, expect = '>' )
+
+        # open application instance
+        #if path != None:
+            
+        #    path_output = self.send_command( command = path, return_output=True )
+
+        #if self.verbosity > 0:
+         #   print( 'python_output: {}\npath_output: {}'.format( output,path_output ) ) 
+
+    def print_id( self, *args):
+        #print( 'instance_id:{}'.format( self.id ) )
+
+        return self.id
 
 # wexpect
 class SubprocessMayapy( ):
@@ -98,7 +176,7 @@ class SubprocessMayapy( ):
     def shell_startup( self, path = None ):
         
         # start shell
-        self.instance = wexpect.console_reader.ConsoleReaderSocket( path, host_pid = os.getppid() )
+        self.instance = wexpect.spawn( path,  )
         print('appended')
         #self.instance.expect( '>>>' )
         

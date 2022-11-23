@@ -1,118 +1,314 @@
-""" import sys
+import subprocess
+import sys
+import os
+import wexpect
+import pexpect
+
+#proc = wexpect.host.SpawnPipe( '"C:\\Program Files\\Autodesk\\Maya2022\\bin\\mayapy.exe"' )
+""" proc = wexpect.host.SpawnPipe( 'C:\Windows\system32\cmd.exe', ['python'], env="Q:\__packages\__python\python_3.7.7\python" )
+print('ah')
+proc.expect( '>>>' )
+print( proc.before )
+
+print('ho')
+proc.sendline( 'python' )
+proc.expect( '>>>' )
+print( proc.before ) """
+
+""" proc.expect('>>>')
+print(proc.before)
+
+proc.sendline( "import maya.standalone" )
+proc.expect('>>>')
+print(proc.before) """
+
+""" from pexpect.popen_spawn import PopenSpawn
+
+p = PopenSpawn( 'cmd.exe', encoding='utf8' )
+p.expect_exact( '\r\n\r\n' )
+print(p.before)
+
+p.send( 'python' )
+p.expect_exact( '\n\r\n\r>>>' )
+print( p.before)
+
+p.sendline( "C:\\Program Files\\Autodesk\\Maya2022\\bin\\mayapy.exe" )
+p.expect( '>>> ' )
+print( p.before ) """
+
+
+
+
+
+
+""" result = subprocess.Popen( 
+    ["C:\\Program Files\\Autodesk\\Maya2022\\bin\\mayapy.exe"], 
+    stdin = subprocess.PIPE, 
+    stdout = subprocess.PIPE, 
+    stderr = subprocess.PIPE, 
+    encoding='UTF8', 
+    universal_newlines=True )
+
+out, err = result.communicate( "import maya.standalone" )
+
+print('Out: {}\nErr: {}'.format(out, err) )
+
+#time.sleep(.5)
+
+out, err = result.communicate( "maya.standalone.initialize( name = 'python' )" )
+
+print('Out: {}\nErr: {}'.format(out, err) )
+
+out, err = result.communicate( "import maya.cmds as cmds" )
+
+print('Out: {}\nErr: {}'.format(out, err) )
+
+out, err = result.communicate( "cmds.file('Q:\__packages\_GitHub\Maya-Standalone-Exporter\test\test_anims_v01.ma'open=True)" )
+
+print('Out: {}\nErr: {}'.format(out, err) ) """
+
+
+""" from subprocess import PIPE, Popen
+
+p = Popen(["python", "-u", "1st.py"], stdin=PIPE, stdout=PIPE, bufsize=1)
+
+print(p.stdout.readline()), # read the first line
+
+for i in range(10): # repeat several times to show that it works
+    print (p.stdin, i) # write input
+    p.stdin.flush() # not necessary in this case
+    print(p.stdout.readline()) # read output
+
+print(p.communicate(b"n\n")[0]) """
+
+
+""" import os
+
+read, write = os.pipe()
+
+if not os.fork():
+    # child
+
+    os.close( read )        # close read pipe
+
+    wdup = 1
+    os.dup2( write, wdup )      # wdup == &write """
+
+
+""" import subprocess
+
+wr_out = open( "temp_out", "wb" )
+re_out = open( "temp_out", "r" )
+
+wr_err = open( "temp_err", "w" )
+re_err = open( "temp_err", "rb" )
+
+proc = subprocess.Popen( 
+    'cmd',
+    stdin = subprocess.PIPE,
+    stdout=wr_out,
+    stderr=wr_err,
+    encoding='UTF8',
+    bufsize=-1
+ )
+
+proc.stdin.write( 'pythonn\n' )
+out = re_out.tell()
+err = re_err.tell()
+
+print( re_out.read(), err )
+ """
+
+
+import sys
 import os
 import subprocess
-
-MAYA_LOCATION = "C:/Program Files/Autodesk/Maya2022"
-PYTHON_LOCATION = MAYA_LOCATION + "/Python/Lib/site-packages"
-
-os.environ["MAYA_LOCATION"] = MAYA_LOCATION
-os.environ["PYTHONPATH"] = PYTHON_LOCATION
-
-sys.path.append(MAYA_LOCATION)
-sys.path.append(PYTHON_LOCATION)
-sys.path.append(MAYA_LOCATION+"/bin")
-sys.path.append(MAYA_LOCATION+"/lib")
-sys.path.append(MAYA_LOCATION+"/Python")
-sys.path.append(MAYA_LOCATION+"/Python/DLLs")
-sys.path.append(MAYA_LOCATION+"/Python/Lib")
-sys.path.append(MAYA_LOCATION+"/Python/Lib/plat-win")
-sys.path.append(MAYA_LOCATION+"/Python/Lib/lib-tk")
-print('\n'.join(sys.path))
+from subprocess import Popen, PIPE
+import threading
 
 
-def test():
-    import maya.cmds as cmds
-    # full path to your Maya file to OPEN
-    maya_file_to_open = r"Q:\__packages\_GitHub\Maya-Standalone-Exporter\test\test_anims_v01.ma"
-    # Open your file
-    cmds.file(maya_file_to_open, o=True)
-    # full path to your Maya file to IMPORT
-    maya_file_to_import = r"Q:\__packages\_GitHub\Maya-Standalone-Exporter\test\test_anims_v01.ma"
-    # Import the file. the variable "nodes" will hold the names of all nodes imported, just in case.
-    cmds.file(maya_file_to_import, i=True, type="mayaAscii")
-    render = r"Q:\__packages\_GitHub\Maya-Standalone-Exporter\test\test_anims_v012.ma"
-    cmds.file(rename=render)
-    cmds.file(force=True, save=True, options='v=1;p=17', type='mayaBinary')
-    print('a')
+""" class LocalShell(object):
+    def __init__(self):
+        pass
 
-
-
-
-
-
-command = 'mayapy {}'.format( test )
-proc = subprocess.Popen( command, shell=True, stdout=subprocess.PIPE )
-proc.wait()
-print( 'output:{}'.format(proc.returncode) ) """
-
-""" string1 = '"white spaces"'
-string = string1.replace( ' ', "' '" )
-
-print( string1, string ) """
-
-import subprocess
-import os
-import io
-import time, os, sys
-o, p = 10, 15
-
-buffer = io.StringIO()
-buffer.seek( 0, os.SEEK_END )
-buffer_size = buffer.tell()
-print( f"Buffer Size {buffer_size}" )
-#import ctypes
-#buffer = ctypes.create_string_buffer(1024)
-
-#print( ctypes.addressof( buffer ) )
-
-@subprocess.PIPE
-class DataClass( ):
-    def __init__(self) -> None:
-        print(  )
+    def run(self):
+        env = os.environ.copy()
+        self.p = Popen(
+                    'cmd.exe', 
+                    stdin=PIPE, 
+                    stdout=PIPE, 
+                    stderr=subprocess.STDOUT, 
+                    shell=True, 
+                    env=env,
+                    text=True)
         
+        sys.stdout.write("Started Local Terminal...\r\n\r\n")
 
-classs = DataClass( 'cmd.exe' )
+    def read(self):
 
+        def writeall(p):
+            while True:
+                #print("read data: ")
+                data = p.stdout.read(1)     # output
 
-cmd = [ 'cmd.exe' ]
+                if not data:        # if no data : break
+                    break
 
-calc = subprocess.Popen(    cmd, 
-                            stdin=subprocess.PIPE,
-                            stdout=sys.stdout,
-                            stderr=sys.stdout,
-                            encoding='UTF-8',
-                            universal_newlines=True)
+                sys.stdout.write(data)      # console print
+                sys.stdout.flush()
 
+        writer = threading.Thread(target=writeall, args=[self.p,] )
+        writer.start()
 
+        try:
+            while True:
+                d = sys.stdin.read(1)
+                if not d:
+                    break
+                self._write(self.p, d.encode())
 
-#print( sys.stdout )
-
-""" for line in iter( calc.stdout.readline, '' ):
-    buffer.write( str(line) )
-    if line in ['\n', '\r\n']:
-        print( f'hit new line:{line}' )
-        break """
-    #print( ">>>{}".format( line.rstrip() ) )
-    #print('hang')
-
-
-#print( "Spawn Output {}: {}".format( 1, sys.stdout ) )
-#calc.stdin.flush()
-
-#print(buffer.getvalue())
-print('hang')
-
-calc.stdin.flush()
-sys.stdout.flush
-sys.stdin.write( 'python\n' )
-
-#print( calc.stdout.read )
-print(sys.stdout)
-#calc.stdin.write( '{} + {}\n'.format( 10,15 ) )
+        except EOFError:
+            pass
 
 
-#print(buffer.getvalue())
+    
+    def _write(self,message):
+        self.p.stdin.write(message)
+        self.p.stdin.flush()
+
+
+shell = LocalShell()
+shell.run()
+shell.read()
+shell._write( 'python\n' )
+shell.read() """
+
+import time
+
+class LocalShell(object):
+    
+    def __init__(self):
+
+        self.start()
+
+    
+    def start( self ):
+        print( 'LocalShell.start()\n' )
+        env = os.environ.copy()
+
+        command = ['cmd.exe']
+        
+        self.p = Popen(
+                    command, 
+                    stdin=PIPE, 
+                    stdout=PIPE, 
+                    stderr=subprocess.STDOUT,
+                    env=env,
+                    text=True)
+
+        print( '\tsuccess' )        # console print
+
+    
+    def read(self):
+        print( 'LocalShell.read()\n' )
+
+        def threaded_read(p):
+            print( '\tLocalShell.read().threaded_read()\n' )
+            while True:
+                #print("read data: ")
+                data = p.stdout.readline()     # output
+
+                if data == '\n':        # if no data : break
+                    
+                    print( 'hit new line' )
+                    break
+
+                print('data:{}'.format(data))
+
+        self.writer = threading.Thread(target=threaded_read, args=[self.p,] )     # thread to take data from stdout
+        self.writer.start()
+
+        """ try:
+            while True:
+                
+                d = sys.stdin.read(1)
+
+                if not d:
+                    break
+                self.write(self.p, d.encode())
+
+        except EOFError:
+            pass """
+
+
+    
+    def write(self,message):
+        print( f'\nLocalShell.write({message})\n' )
+        self.writer.join()
+
+        self.p.stdin.write(message)
+        self.p.stdin.flush()
+
+shell = LocalShell(  )      # starts instance of the shell
+shell.read()
+time.sleep(.01)
+shell.write( 'python' )
+shell.read()
 
 
 
-#print( "Spawn Output {}: {}".format( 2, sys.stdout ) )
+
+""" shell = LocalShell()
+shell.read()
+shell._write( 'python\n' )
+shell.read() """
+
+
+""" w = open('not', 'wb')
+r = open('not', 'r')
+
+w.write(b'nononono')
+r.read()
+
+print( r.read() ) """
+
+
+#shell.write( shell, 'python' )
+
+
+
+
+
+
+
+
+""" def start(executable_file):
+    return subprocess.Popen(
+        executable_file,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+
+
+def read(process):
+    return process.stdout.readline().decode("utf-8").strip()
+
+
+def write(process, message):
+    process.stdin.write(f"{message.strip()}\n".encode("utf-8"))
+    process.stdin.flush()
+
+
+def terminate(process):
+    process.stdin.close()
+    process.terminate()
+    process.wait(timeout=0.2)
+
+
+process = start("C:\\Program Files\\Autodesk\\Maya2022\\bin\\mayapy.exe")
+write(process, "import maya.standalone")
+print(read(process))
+print(read(process))
+
+terminate(process)
+ """
