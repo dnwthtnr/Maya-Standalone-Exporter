@@ -228,4 +228,27 @@ if __name__ == "__main__":
     process.start()
 
     print(1)
+
+
+############# !WORKING! ################
+
+import sys
+import os
+import subprocess
+
+command = "python"
+while True:
+
+    try:
+        cmd = input()
+        if cmd == "exit": break
+        
+        proc = subprocess.check_output( 
+            cmd,
+            universal_newlines=True )
+        
+        print( 'out: {}'.format(proc) )
+    except KeyboardInterrupt:
+        break
+    
     

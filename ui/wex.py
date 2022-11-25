@@ -1,4 +1,4 @@
-from cmd import Cmd
+""" from cmd import Cmd
  
 class MyPrompt(Cmd):
     prompt = 'pb> '
@@ -27,4 +27,24 @@ class MyPrompt(Cmd):
     help_EOF = help_exit
  
 if __name__ == '__main__':
-    MyPrompt().cmdloop()?
+    MyPrompt().cmdloop()? """
+
+import sys
+import os
+import subprocess
+
+command = "python"
+while True:
+
+    try:
+        cmd = input()
+        if cmd == "exit": break
+        
+        proc = subprocess.check_output( 
+            cmd,
+            universal_newlines=True )
+        
+        print( 'out: {}'.format(proc) )
+    except KeyboardInterrupt:
+        break
+    
